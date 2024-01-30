@@ -40,8 +40,10 @@ export async function getPrivateKeyAsync() {
   return pemBuffer.toString('utf8');
 }
 
-export async function getLatestUpdateBundlePathForRuntimeVersionAsync(runtimeVersion: string) {
-  const updatesDirectoryForRuntimeVersion = `updates/${runtimeVersion}`;
+//export async function getLatestUpdateBundlePathForRuntimeVersionAsync(runtimeVersion: string) {
+export async function getLatestUpdateBundlePathForRuntimeVersionAsync() {
+  //const updatesDirectoryForRuntimeVersion = `updates/${runtimeVersion}`;
+  const updatesDirectoryForRuntimeVersion = `updates/latest`;
   if (!fsSync.existsSync(updatesDirectoryForRuntimeVersion)) {
     throw new Error('Unsupported runtime version');
   }
@@ -91,7 +93,8 @@ export async function getAssetMetadataAsync(arg: GetAssetMetadataArg) {
     key,
     fileExtension: `.${keyExtensionSuffix}`,
     contentType,
-    url: `${process.env.NEXT_PUBLIC_HOSTNAME}/api/assets?asset=${assetFilePath}&runtimeVersion=${arg.runtimeVersion}&platform=${arg.platform}`,
+    url: `${process.env.NEXT_PUBLIC_HOSTNAME}/api/assets?asset=${assetFilePath}&runtimeVersion=latest&platform=${arg.platform}`,
+    //url: `${process.env.NEXT_PUBLIC_HOSTNAME}/api/assets?asset=${assetFilePath}&runtimeVersion=${runtimeVersion}&platform=${arg.platform}`,
   };
 }
 
