@@ -205,6 +205,8 @@ async function putUpdateInResponseAsync(
   form.append('extensions', JSON.stringify({ assetRequestHeaders }), {
     contentType: 'application/json',
   });
+  console.log('manifest', manifest);
+  console.log('asset', assetRequestHeaders);
 
   res.statusCode = 200;
   res.setHeader('expo-protocol-version', protocolVersion);
@@ -212,7 +214,6 @@ async function putUpdateInResponseAsync(
   res.setHeader('cache-control', 'private, max-age=0');
   res.setHeader('content-type', `multipart/mixed; boundary=${form.getBoundary()}`);
   res.write(form.getBuffer());
-  res.send(form.getBuffer());
   res.end();
 }
 
