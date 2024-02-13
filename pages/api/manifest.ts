@@ -25,6 +25,10 @@ export default async function manifestEndpoint(req: NextApiRequest, res: NextApi
   }
 
   const protocolVersionMaybeArray = req.headers['expo-protocol-version'];
+  console.log(
+    'protocolVersionMaybeArray:::::::',
+    JSON.stringify(protocolVersionMaybeArray, null, 2)
+  );
   if (protocolVersionMaybeArray && Array.isArray(protocolVersionMaybeArray)) {
     res.statusCode = 400;
     res.json({
@@ -33,8 +37,16 @@ export default async function manifestEndpoint(req: NextApiRequest, res: NextApi
     return;
   }
   const protocolVersion = parseInt(protocolVersionMaybeArray ?? '0', 10);
+  if (protocolVersion !== 0 && protocolVersion !== 1) {
+    res.statusCode = 400;
+    res.json({
+      error: 'Unsupported protocol version. Expected either 0 or 1.',
+    });
+    return;
+  }
 
   const platform = req.headers['expo-platform'] ?? req.query['platform'];
+  console.log('platform:::::::', JSON.stringify(platform, null, 2));
   if (platform !== 'ios' && platform !== 'android') {
     res.statusCode = 400;
     res.json({
@@ -44,6 +56,7 @@ export default async function manifestEndpoint(req: NextApiRequest, res: NextApi
   }
 
   const runtimeVersion = req.headers['expo-runtime-version'] ?? req.query['runtime-version'];
+  console.log('runtimeVersion:::::::', JSON.stringify(runtimeVersion, null, 2));
   if (!runtimeVersion || typeof runtimeVersion !== 'string') {
     res.statusCode = 400;
     res.json({
@@ -54,8 +67,9 @@ export default async function manifestEndpoint(req: NextApiRequest, res: NextApi
 
   let updateBundlePath: string;
   try {
-    updateBundlePath = await getLatestUpdateBundlePathForRuntimeVersionAsync();
-    //    updateBundlePath = await getLatestUpdateBundlePathForRuntimeVersionAsync(runtimeVersion);
+    ///    updateBundlePath = await getLatestUpdateBundlePathForRuntimeVersionAsync();
+    updateBundlePath = await getLatestUpdateBundlePathForRuntimeVersionAsync(runtimeVersion);
+    console.log('updateBundlePath:::::::', JSON.stringify(updateBundlePath, null, 2));
   } catch (error: any) {
     res.statusCode = 404;
     res.json({
@@ -65,6 +79,7 @@ export default async function manifestEndpoint(req: NextApiRequest, res: NextApi
   }
 
   const updateType = await getTypeOfUpdateAsync(updateBundlePath);
+  console.log('updateType:::::::', JSON.stringify(updateType, null, 2));
 
   try {
     try {
@@ -161,8 +176,13 @@ async function putUpdateInResponseAsync(
 
   let signature = null;
   const expectSignatureHeader = req.headers['expo-expect-signature'];
+  console.log(
+    'SignatureHeader:::::::',
+    JSON.stringify(req.headers['expo-expect-signature'], null, 2)
+  );
   if (expectSignatureHeader) {
     const privateKey = await getPrivateKeyAsync();
+    console.log('privateKey:::::::', JSON.stringify(privateKey, null, 2));
     if (!privateKey) {
       res.statusCode = 400;
       res.json({
@@ -171,12 +191,16 @@ async function putUpdateInResponseAsync(
       return;
     }
     const manifestString = JSON.stringify(manifest);
+    console.log('manifestString:::::::', JSON.stringify(manifestString, null, 2));
     const hashSignature = signRSASHA256(manifestString, privateKey);
+    console.log('hashSignature:::::::', JSON.stringify(hashSignature, null, 2));
     const dictionary = convertToDictionaryItemsRepresentation({
       sig: hashSignature,
       keyid: 'main',
     });
+    console.log('dictionary:::::::', JSON.stringify(dictionary, null, 2));
     signature = serializeDictionary(dictionary);
+    console.log('signature:::::::', JSON.stringify(signature, null, 2));
   }
 
   const assetRequestHeaders: { [key: string]: object } = {};
@@ -185,6 +209,7 @@ async function putUpdateInResponseAsync(
       'test-header': 'test-header-value',
     };
   });
+  console.log('assetRequestHeaders:::::::', JSON.stringify(assetRequestHeaders, null, 2));
 
   const form = new FormData();
   form.append('manifest', JSON.stringify(manifest), {
@@ -197,6 +222,7 @@ async function putUpdateInResponseAsync(
   form.append('extensions', JSON.stringify({ assetRequestHeaders }), {
     contentType: 'application/json',
   });
+  console.log('protcolVersion:::::::', protocolVersion);
 
   res.statusCode = 200;
   res.setHeader('expo-protocol-version', protocolVersion);
@@ -204,6 +230,7 @@ async function putUpdateInResponseAsync(
   res.setHeader('cache-control', 'private, max-age=0');
   res.setHeader('content-type', `multipart/mixed; boundary=${form.getBoundary()}`);
   res.write(form.getBuffer());
+  console.log('res:::::::', JSON.stringify(res, null, 2));
   res.end();
 }
 

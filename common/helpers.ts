@@ -40,10 +40,10 @@ export async function getPrivateKeyAsync() {
   return pemBuffer.toString('utf8');
 }
 
-//export async function getLatestUpdateBundlePathForRuntimeVersionAsync(runtimeVersion: string) {
-export async function getLatestUpdateBundlePathForRuntimeVersionAsync() {
-  //const updatesDirectoryForRuntimeVersion = `updates/${runtimeVersion}`;
-  const updatesDirectoryForRuntimeVersion = `updates/latest`;
+export async function getLatestUpdateBundlePathForRuntimeVersionAsync(runtimeVersion: string) {
+  //export async function getLatestUpdateBundlePathForRuntimeVersionAsync() {
+  const updatesDirectoryForRuntimeVersion = `updates/${runtimeVersion}`;
+  //const updatesDirectoryForRuntimeVersion = `updates/latest`;
   if (!fsSync.existsSync(updatesDirectoryForRuntimeVersion)) {
     throw new Error('Unsupported runtime version');
   }
@@ -59,6 +59,7 @@ export async function getLatestUpdateBundlePathForRuntimeVersionAsync() {
   )
     .filter(truthy)
     .sort((a, b) => parseInt(b, 10) - parseInt(a, 10));
+  console.log('directoriesInUpdatesDirectory', directoriesInUpdatesDirectory);
   return path.join(updatesDirectoryForRuntimeVersion, directoriesInUpdatesDirectory[0]);
 }
 
