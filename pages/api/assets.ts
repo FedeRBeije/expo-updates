@@ -11,9 +11,6 @@ import {
 
 export default async function assetsEndpoint(req: NextApiRequest, res: NextApiResponse) {
   const { asset: assetName, runtimeVersion, platform } = req.query;
-  console.log('Assets:::assetName:', assetName);
-  console.log('Assets:::runtimeVersion:', runtimeVersion);
-  console.log('Assets:::platform:', platform);
 
   if (!assetName || typeof assetName !== 'string') {
     res.statusCode = 400;
@@ -49,7 +46,6 @@ export default async function assetsEndpoint(req: NextApiRequest, res: NextApiRe
     updateBundlePath,
     runtimeVersion,
   });
-  console.log('Assets:::metadataJson:', JSON.stringify(metadataJson, null, 2));
 
   const assetPath = path.resolve(assetName);
   const assetMetadata = metadataJson.fileMetadata[platform].assets.find(
@@ -57,7 +53,6 @@ export default async function assetsEndpoint(req: NextApiRequest, res: NextApiRe
   );
   const isLaunchAsset =
     metadataJson.fileMetadata[platform].bundle === assetName.replace(`${updateBundlePath}/`, '');
-  console.log('Assets:::assetMetadata:', JSON.stringify(assetMetadata, null, 2));
 
   if (!fs.existsSync(assetPath)) {
     res.statusCode = 404;

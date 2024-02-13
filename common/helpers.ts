@@ -88,16 +88,13 @@ export async function getAssetMetadataAsync(arg: GetAssetMetadataArg) {
   const keyExtensionSuffix = arg.isLaunchAsset ? 'bundle' : arg.ext;
   const contentType = arg.isLaunchAsset ? 'application/javascript' : mime.getType(arg.ext);
 
-  let obj = {
+  return {
     hash: assetHash,
     key,
     fileExtension: `.${keyExtensionSuffix}`,
     contentType,
     url: `${process.env.NEXT_PUBLIC_HOSTNAME}/api/assets?asset=${assetFilePath}&runtimeVersion=${arg.runtimeVersion}&platform=${arg.platform}`,
   };
-
-  console.log('fsdfsdf', obj);
-  return obj;
 }
 
 export async function createRollBackDirectiveAsync(updateBundlePath: string) {
