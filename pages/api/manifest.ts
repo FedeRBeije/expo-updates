@@ -180,7 +180,6 @@ async function putUpdateInResponseAsync(
     }
     const manifestString = JSON.stringify(manifest);
     const hashSignature = signRSASHA256(manifestString, privateKey);
-    console.log('hashSignature::::', hashSignature);
     const dictionary = convertToDictionaryItemsRepresentation({
       sig: hashSignature,
       keyid: 'main',

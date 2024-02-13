@@ -18,6 +18,7 @@ function getBase64URLEncoding(base64EncodedString: string): string {
 export function convertToDictionaryItemsRepresentation(obj: { [key: string]: string }): Dictionary {
   return new Map(
     Object.entries(obj).map(([k, v]) => {
+      console.log('k', k, 'v', v);
       return [k, [v, new Map()]];
     })
   );
