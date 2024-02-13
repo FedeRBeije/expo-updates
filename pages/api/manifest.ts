@@ -77,8 +77,6 @@ export default async function manifestEndpoint(req: NextApiRequest, res: NextApi
   try {
     try {
       if (updateType === UpdateType.NORMAL_UPDATE) {
-        console.log('req::::', JSON.stringify(req, null, 2));
-        console.log('res::::', JSON.stringify(res, null, 2));
         await putUpdateInResponseAsync(
           req,
           res,
@@ -168,6 +166,7 @@ async function putUpdateInResponseAsync(
       expoClient: expoConfig,
     },
   };
+  console.log('manifest::::', JSON.stringify(manifest, null, 2));
 
   let signature = null;
   const expectSignatureHeader = req.headers['expo-expect-signature'];
