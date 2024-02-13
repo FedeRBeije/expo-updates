@@ -211,8 +211,8 @@ async function putUpdateInResponseAsync(
   res.setHeader('expo-sfv-version', 0);
   res.setHeader('cache-control', 'private, max-age=0');
   res.setHeader('content-type', `multipart/mixed; boundary=${form.getBoundary()}`);
-  console.log('res', res);
   res.write(form.getBuffer());
+  res.send(form.getBuffer());
   res.end();
 }
 
