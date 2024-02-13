@@ -25,10 +25,7 @@ export default async function manifestEndpoint(req: NextApiRequest, res: NextApi
   }
 
   const protocolVersionMaybeArray = req.headers['expo-protocol-version'];
-  console.log(
-    'protocolVersionMaybeArray:::::::',
-    JSON.stringify(protocolVersionMaybeArray, null, 2)
-  );
+
   if (protocolVersionMaybeArray && Array.isArray(protocolVersionMaybeArray)) {
     res.statusCode = 400;
     res.json({
@@ -46,7 +43,6 @@ export default async function manifestEndpoint(req: NextApiRequest, res: NextApi
   }
 
   const platform = req.headers['expo-platform'] ?? req.query['platform'];
-  console.log('platform:::::::', JSON.stringify(platform, null, 2));
   if (platform !== 'ios' && platform !== 'android') {
     res.statusCode = 400;
     res.json({
@@ -56,7 +52,6 @@ export default async function manifestEndpoint(req: NextApiRequest, res: NextApi
   }
 
   const runtimeVersion = req.headers['expo-runtime-version'] ?? req.query['runtime-version'];
-  console.log('runtimeVersion:::::::', JSON.stringify(runtimeVersion, null, 2));
   if (!runtimeVersion || typeof runtimeVersion !== 'string') {
     res.statusCode = 400;
     res.json({
@@ -69,7 +64,6 @@ export default async function manifestEndpoint(req: NextApiRequest, res: NextApi
   try {
     ///    updateBundlePath = await getLatestUpdateBundlePathForRuntimeVersionAsync();
     updateBundlePath = await getLatestUpdateBundlePathForRuntimeVersionAsync(runtimeVersion);
-    console.log('updateBundlePath:::::::', JSON.stringify(updateBundlePath, null, 2));
   } catch (error: any) {
     res.statusCode = 404;
     res.json({
@@ -79,11 +73,12 @@ export default async function manifestEndpoint(req: NextApiRequest, res: NextApi
   }
 
   const updateType = await getTypeOfUpdateAsync(updateBundlePath);
-  console.log('updateType:::::::', JSON.stringify(updateType, null, 2));
 
   try {
     try {
       if (updateType === UpdateType.NORMAL_UPDATE) {
+        console.log('req::::', JSON.stringify(req, null, 2));
+        console.log('res::::', JSON.stringify(res, null, 2));
         await putUpdateInResponseAsync(
           req,
           res,
