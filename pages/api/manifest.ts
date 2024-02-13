@@ -205,7 +205,6 @@ async function putUpdateInResponseAsync(
   form.append('extensions', JSON.stringify({ assetRequestHeaders }), {
     contentType: 'application/json',
   });
-  console.log('manifest', JSON.stringify(manifest));
 
   res.statusCode = 200;
   res.setHeader('expo-protocol-version', protocolVersion);
