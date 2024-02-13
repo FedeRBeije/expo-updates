@@ -184,7 +184,6 @@ async function putUpdateInResponseAsync(
       sig: hashSignature,
       keyid: 'main',
     });
-    console.log('dictionary::::', JSON.stringify(dictionary, null, 2));
     signature = serializeDictionary(dictionary);
   }
 
@@ -212,6 +211,7 @@ async function putUpdateInResponseAsync(
   res.setHeader('expo-sfv-version', 0);
   res.setHeader('cache-control', 'private, max-age=0');
   res.setHeader('content-type', `multipart/mixed; boundary=${form.getBoundary()}`);
+  console.log('res', res);
   res.write(form.getBuffer());
   res.end();
 }
