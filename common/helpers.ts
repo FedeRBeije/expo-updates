@@ -18,7 +18,6 @@ function getBase64URLEncoding(base64EncodedString: string): string {
 export function convertToDictionaryItemsRepresentation(obj: { [key: string]: string }): Dictionary {
   return new Map(
     Object.entries(obj).map(([k, v]) => {
-      console.log('k', k, 'v', v);
       return [k, [v, new Map()]];
     })
   );
@@ -60,7 +59,6 @@ export async function getLatestUpdateBundlePathForRuntimeVersionAsync(runtimeVer
   )
     .filter(truthy)
     .sort((a, b) => parseInt(b, 10) - parseInt(a, 10));
-  console.log('directoriesInUpdatesDirectory', directoriesInUpdatesDirectory);
   return path.join(updatesDirectoryForRuntimeVersion, directoriesInUpdatesDirectory[0]);
 }
 
@@ -90,13 +88,16 @@ export async function getAssetMetadataAsync(arg: GetAssetMetadataArg) {
   const keyExtensionSuffix = arg.isLaunchAsset ? 'bundle' : arg.ext;
   const contentType = arg.isLaunchAsset ? 'application/javascript' : mime.getType(arg.ext);
 
-  return {
+  let obj = {
     hash: assetHash,
     key,
     fileExtension: `.${keyExtensionSuffix}`,
     contentType,
     url: `${process.env.NEXT_PUBLIC_HOSTNAME}/api/assets?asset=${assetFilePath}&runtimeVersion=${arg.runtimeVersion}&platform=${arg.platform}`,
   };
+
+  console.log('fsdfsdf', obj);
+  return obj;
 }
 
 export async function createRollBackDirectiveAsync(updateBundlePath: string) {
