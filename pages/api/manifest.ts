@@ -176,13 +176,8 @@ async function putUpdateInResponseAsync(
 
   let signature = null;
   const expectSignatureHeader = req.headers['expo-expect-signature'];
-  console.log(
-    'SignatureHeader:::::::',
-    JSON.stringify(req.headers['expo-expect-signature'], null, 2)
-  );
   if (expectSignatureHeader) {
     const privateKey = await getPrivateKeyAsync();
-    console.log('privateKey:::::::', JSON.stringify(privateKey, null, 2));
     if (!privateKey) {
       res.statusCode = 400;
       res.json({
@@ -191,16 +186,12 @@ async function putUpdateInResponseAsync(
       return;
     }
     const manifestString = JSON.stringify(manifest);
-    console.log('manifestString:::::::', JSON.stringify(manifestString, null, 2));
     const hashSignature = signRSASHA256(manifestString, privateKey);
-    console.log('hashSignature:::::::', JSON.stringify(hashSignature, null, 2));
     const dictionary = convertToDictionaryItemsRepresentation({
       sig: hashSignature,
       keyid: 'main',
     });
-    console.log('dictionary:::::::', JSON.stringify(dictionary, null, 2));
     signature = serializeDictionary(dictionary);
-    console.log('signature:::::::', JSON.stringify(signature, null, 2));
   }
 
   const assetRequestHeaders: { [key: string]: object } = {};
@@ -209,7 +200,6 @@ async function putUpdateInResponseAsync(
       'test-header': 'test-header-value',
     };
   });
-  console.log('assetRequestHeaders:::::::', JSON.stringify(assetRequestHeaders, null, 2));
 
   const form = new FormData();
   form.append('manifest', JSON.stringify(manifest), {
@@ -222,7 +212,6 @@ async function putUpdateInResponseAsync(
   form.append('extensions', JSON.stringify({ assetRequestHeaders }), {
     contentType: 'application/json',
   });
-  console.log('Put:::::protcolVersion:::::::', protocolVersion);
 
   res.statusCode = 200;
   res.setHeader('expo-protocol-version', protocolVersion);
