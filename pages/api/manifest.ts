@@ -166,7 +166,6 @@ async function putUpdateInResponseAsync(
       expoClient: expoConfig,
     },
   };
-  console.log('manifest::::', JSON.stringify(manifest, null, 2));
 
   let signature = null;
   const expectSignatureHeader = req.headers['expo-expect-signature'];
@@ -181,10 +180,12 @@ async function putUpdateInResponseAsync(
     }
     const manifestString = JSON.stringify(manifest);
     const hashSignature = signRSASHA256(manifestString, privateKey);
+    console.log('hashSignature::::', hashSignature);
     const dictionary = convertToDictionaryItemsRepresentation({
       sig: hashSignature,
       keyid: 'main',
     });
+    console.log('dictionary::::', JSON.stringify(dictionary, null, 2));
     signature = serializeDictionary(dictionary);
   }
 
